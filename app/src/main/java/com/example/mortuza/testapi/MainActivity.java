@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -107,11 +108,51 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.d("response", response);
+                        //checking Insert and dialog box open
+
                         if (response.equals("insert complete")) {
-                            final Dialog dialog=new Dialog(MainActivity.this);
+                            final Dialog dialog = new Dialog(MainActivity.this);
                             dialog.setContentView(R.layout.customdialog);
+                            dialog.setTitle("Mail verification");
+                            TextView MailCode = (TextView) dialog.findViewById(R.id.codecheck);
+                            Button codeVerify = (Button) dialog.findViewById(R.id.codeVerify);
+                            final String code = MailCode.getText().toString();
+                            codeVerify.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    StringRequest request1 = new StringRequest(Request.Method.POST, "http://192.168.0.107/TestDemo/action.php?f_name=Verification", new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            if(response.equals("verification complete"))
+                                            {
+                                                dialog.dismiss();
+                                                Toast.makeText(getApplicationContext(),"Verification Complete",Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    }, new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                            error.printStackTrace();
 
+                                        }
+                                    }) {
+                                        @Override
+                                        protected Map<String, String> getParams() throws AuthFailureError {
 
+                                            HashMap<String, String> hm = new HashMap<String, String>();
+                                            hm.put("mail", u_email);
+                                            hm.put("ecode", code);
+                                            return hm;
+                                        }
+
+                                    };
+                                    TestVolly.getInstance().addToRequest(request1);
+
+                                }
+
+                            });
+                            dialog.show();
                         }
 
                         Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
