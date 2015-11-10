@@ -1,9 +1,13 @@
 package com.example.mortuza.testapi;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
                                 Listarray.add(new UserModel(Id, name, Phone, email));
                                 Log.d("access", "" + Id);
 
-
                             }
 
 
@@ -104,7 +107,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.d("response", response);
-                        Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
+                        if (response.equals("insert complete")) {
+                            final Dialog dialog=new Dialog(MainActivity.this);
+                            dialog.setContentView(R.layout.customdialog);
+
+
+                        }
+
+                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
 
                     }
 
@@ -136,4 +146,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
 }
