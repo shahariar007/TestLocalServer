@@ -120,9 +120,12 @@ public class MainActivity extends AppCompatActivity {
                             codeVerify.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+
                                     StringRequest request1 = new StringRequest(Request.Method.POST, "http://192.168.0.107/TestDemo/action.php?f_name=Verification", new Response.Listener<String>() {
                                         @Override
                                         public void onResponse(String response) {
+                                            Log.i("dsad", response);
+                                            Toast.makeText(MainActivity.this, response, Toast.LENGTH_LONG).show();
                                             if(response.equals("verification complete"))
                                             {
                                                 dialog.dismiss();
@@ -140,14 +143,16 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                         protected Map<String, String> getParams() throws AuthFailureError {
 
-                                            HashMap<String, String> hm = new HashMap<String, String>();
-                                            hm.put("mail", u_email);
-                                            hm.put("ecode", code);
-                                            return hm;
+                                            HashMap<String, String> hmd = new HashMap<String, String>();
+                                            hmd.put("mail", u_email);
+                                            hmd.put("code", code);
+                                            return hmd;
                                         }
 
                                     };
+                                    request1.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                                     TestVolly.getInstance().addToRequest(request1);
+
 
                                 }
 
